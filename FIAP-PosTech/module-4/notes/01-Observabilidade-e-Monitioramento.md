@@ -112,3 +112,99 @@
     - Processo de adicionar mecanismos de coleta de dados dentro da aplicação
     - Pode ser feita manualmente: maior controle e maior necessidade de manutenção
     - Instrumentação automática: envolve interceptar chamadas sem necessidade de mudar o código
+
+## Fundamentos de coleta de métricas
+
+### Camadas de coleta de métricas
+- Métricas de Infra (Camada 1)
+    - CPU, memória, disco e rede
+    - Medição de disponibilidade e desempenho dos recursos
+
+- Métricas de SO (Camada 2)
+    - Processos e consumo de recursos
+    - Logs do Sistema Operacional
+
+- Máquinas virtuais e hosts de nuvem (Camada 3)
+    - Cloudwatch e Azure Monitor
+    - Escalabilidade automática e infra elástica
+
+- Orquestração (k8s e Docker Swarm) (Camada 4)
+    - Status dos nós e saúde dos pods/containers
+
+- Contêineres (Camada 5)
+    - Uso de CPU e memória
+    - Restart count e latência de rede entre os contêineres
+
+- Aplicação (Camada 6)
+    - Métricas de negócio
+    - Coletadas por agentes e exporters
+
+### Modelos de coleta
+- Pull: agente busca métricas periodicamente
+- Push: aplicações enviam métricas para coletor
+    - Especialmente útil para jobs de curta duração
+
+- Trade-off: frequência de coleta x custo
+    - Quanto mais dados, maior o entendimento do sistema, porém o custo de análisar, armazenar e gerenciar esse volume de dados se torna maior
+
+### Padrões abertos de coleta
+- OpenMetrics
+    - Padrão para exposição e formatação de métricas
+    - Baseado no ecossistema _Prometheus_
+- OpenTelemetry
+    - Framework unificado para métricas, logs e traces
+    - Facilita correlação e instrumentalização
+- Uso de labels e tags
+    - Ambientes dinâmicos exigem contexto nas métricas
+    - Facilita análise cruzada entre múltiplas camadas
+- Correlação entre métricas
+    - Fornecem um entendimento multifator de um problema e evitam diagnósticos precipitados
+    - Ex: Latência alta e High CPU Usage
+
+### Boas práticas e estratégias
+- Não monitorar apenas infra
+    - Monitorar app, experiência de usuário e negócio
+- Unificar camadas de observabilidade
+    - Permite buscas eficientes e correlações automáticas
+- Automatização é necessária em contextos dinâmicos
+    - Por exemplo, novas instâncias são monitoradas automaticamente
+- Definição de KPIs e SLIs
+    - Medir o que realmente importa
+        - Disponibilidade, latência, taxa de erro e throughput
+- Pipeline unificado de métricas
+    - Coleta -> Armazenamento -> Análise -> Correlação
+
+### KPIs (Key Performance Indicators): Técnicos vs Negócio
+
+- Técnicos: Uso de CPU e memória, latência média e número de erros do tipo 5xx
+- Negócio: taxa de conversão, tempo médio de processamento e disponibilidade para o cliente final
+
+### Considerações de segurança e governança
+- Endpoints não autorizados podem revelar topologia interna
+- Versões de software inadequadas e métricas sensíveis podem facilitar ataques
+- Práticas como redes privadas, anonimização e rotação de credenciais são necessárias
+- Tags auxiliam na governanança e geração de relatórios
+
+## Alertas
+- Com o enorme volume de dados gerado por sistemas, o desafio é transformá-los em conhecimento
+- Contexto é dado pela coleta e análise de dados
+- _Detecção_ de padrões anormais geram um _Alerta_ que, por sua vez, aciona a equipe responsável que inicia uma _Ação_
+### Dados em métricas acionáveis
+- CPU a 90% sozinho pode não ser um problema, mas combinado com latência pode indicar degradação
+### Tipos de alertas
+- Técnico: relacionam-se com a infraestrutura, tempo de CPU, uso de memória etc
+- Negócio: impacta diretamente o cliente como erros de login e queda no checkout
+### Boas práticas com alertas
+- Evitar ruído
+- Definir prioridade
+- Automatizar correlações
+- Usar contexto
+- Documentar ações para cada problema
+- Usar como base conceitual para definição de thresholds SLIs e SLOs
+### Alertas inteligentes
+- Utilizam análise contextual para filtrar o que é importante do que que é ruído
+- Machine Learning pode ser empregada nesse contexto
+- Notificações também devem ser eficientes ao mandar para o time certo pelo canal de comunicação adequado
+- Diferenciação de alertas críticos e informativos
+- Playbooks e RunBooks que descrevem passo a passo como responder incidentes
+- Automação de respostas basedados nesses documentos
