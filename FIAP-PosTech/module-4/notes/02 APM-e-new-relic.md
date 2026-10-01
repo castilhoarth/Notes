@@ -1,6 +1,81 @@
- # A Fazer
+ # New Relic
 
- ## Arquitetura do New Relic (APM) — Resumo
+ - Oferece 100 GB de ingestão de dados gratuita
+ - Usuário ilimitado com acesso a todos os módulos
+ - Organização de contas
+    - Organição contém _accounts_
+    - Accounts: possui dados, usuários associados e configurações.
+    - Usuário
+- Níveis de contas
+    - Basic (read only): acessos a dashboards e coisas
+    - Core: acesso a logs, errors, integração com IDE e debugs
+    - Full: acesso irrestrito (admins)
+
+## Conceito de transações
+- Unidade lógica de trabalho monitorada pelo New Relic
+- Desde entrada até saída
+- Tipos
+    - Web: iniciadas por requisiçõpes http (sync) críticas para UX
+    - Background: jobs, fila, cron (async)
+
+## Instrumentação automática e manual
+
+- Automática
+    - Feita por agentes
+    - Ideal para uso geral e início rápido
+- Manual
+    - Uso de SDKs ou APIs
+    - Requer alteração e é ideal para processos complexos e KPIs
+
+## Modelos de entidades
+- Entidade: qualquer objeto monitorado que emite dados
+- Principais tipos:
+    - Services: aplicações backend, transações de BD etc;
+    - Infrastructure: host, containers e nuvem
+    - Browser: Aplicações frontend
+    - Synthetics: monitores proativos que simulam comportamento
+
+## Entity Explorer e LookOut
+- Entity Explorer: inventário global e filtrável de todas as entidades
+- Entity Navigator: Visualização de alta densidade. Permite ver status de saúde de milhares de entidades em uma só tela
+- New Relic LookOut: visualização de desvios de comportamento
+    - Analisa a partir do histórico
+    - Sem necessidade configuração prévia
+- Fluxo: Navigator -> lookout -> trace detail
+
+## Service Map
+- Serve para visualizar dependências
+- Construido automaticamento a partir da análise de tráfego
+
+## Tagging e Metadata
+- Tags: metadados de alto nível. Mutáveis e usados para filtragem de inventário e agrupamento.
+- Custom Attributes: metadados de baixo nível e associados a eventos de forma imutável
+
+## Governança de Tags
+- Env, team, service-level e owner são tags obrigatórias em escala
+
+## APDEX Score
+- Métrica para medir satisfação do usuário
+
+## Métricas e eventos
+- É possível coletar métricas customizadas e registros JSONs completos
+
+## Sampling e retenção de dados
+- Mecanismo integrante do new relic que armazena parte dos traces para otimizar recursos
+- New Relic equilibra custo e performance com a seguinte estratégia:
+    - Métricas e logs por mais tempo
+    - Eventos e traces por 8 dias (mais pesados)
+
+## Usuários e papéis
+- Sistema de controle no New Relic é o RBAC
+- Usuários adicionados à uma org e podem ter uma ou mais contas associadas a uma role dentro delas
+
+## Tipos de chaves
+- License: usadas para enviar dados de telemetria
+- User: herda permissões do user e permite integrar com API e base de dados
+- Browser: coletar dados de perfomance do frontend
+
+## Arquitetura do New Relic (APM) — Resumo
 
  - New Relic é uma plataforma distribuída para coleta, processamento, análise e visualização de telemetria de aplicações e infraestrutura.
  - A arquitetura é organizada em pilares complementares:
